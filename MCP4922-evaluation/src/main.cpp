@@ -79,14 +79,14 @@ void setup() {
 
 void loop() {
   // Write to DAC A
-  writeMCP4922(4095);
+  writeDAC(4095, chipSelect);
 
   // Measure DAC output
   dacOutputA = analogRead(A0);
-  dacOutputB = analogRead(A1);
+  // dacOutputB = analogRead(A1);
 
   Serial.print("DAC A output: "); Serial.println(dacOutputA);
-  Serial.print("DAC B output: "); Serial.println(dacOutputB);
+  // Serial.print("DAC B output: "); Serial.println(dacOutputB);
 
   delay(2000);
 }

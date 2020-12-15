@@ -1,13 +1,11 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-float dacOutputA;
-int dacOutputB;
-
 const int chipSelect = 10;
-const int LDAC = 8;
+const int LDAC = 8; // LDAC pin
 
-// SPISettings settingsA(16000000, MSBFIRST, SPI_MODE0);
+float dacOutputA;
+float dacOutputB;
 
 void writeDAC(uint16_t data, uint8_t chipSelectPin)
 {
@@ -41,9 +39,9 @@ void writeMCP4922(uint16_t data)
   SPI.beginTransaction(SPISettings(14000000, MSBFIRST, SPI_MODE0));
 
   // Set CS pin low to transfer data
-  digitalWrite(chipSelect, LOW);
+  digitalWrite(SS, LOW);
   SPI.transfer16(msg);
-  digitalWrite(chipSelect, HIGH);
+  digitalWrite(SS, HIGH);
 
   SPI.endTransaction();
 
@@ -58,33 +56,32 @@ void writeMCP4922(uint16_t data)
 }
 
 void setup() {
-  // Set CS default high
-  pinMode(chipSelect, OUTPUT);       // Set SPI CS pin as output
-  digitalWrite(chipSelect, HIGH);    // Initialize CS pin in default state
+  pinMode(chipSelect, OUTPUT);
+  digitalWrite(chipSelect, HIGH);
 
+  // Configure LDAC pin
   pinMode(LDAC, OUTPUT);
   digitalWrite(LDAC, HIGH);
 
+  Serial.begin(115200);
+
   // Initialize SPI communication (DAC)
   SPI.begin();
-  // SPI.setClockDivider(SPI_CLOCK_DIV2);
-
-  Serial.begin(9600);
-
-  // noInterrupts();
+  SPI.setClockDivider(SPI_CLOCK_DIV8);
 }
 
 void loop() {
   // Write to DAC A
   // writeMCP4922(512);
-  writeDAC(4094, 10);
+  writeDAC(4095, chipSelect);
 
   // Measure DAC output
-  dacOutputA = (float)analogRead(A0) * (5.0 / 1024.0);
-  dacOutputB = analogRead(A1);
+  // dacOutputA = (float)analogRead(A0) * (5.0 / 1024.0);
+  int dacOutput = analogRead(A0);
+  // dacOutputB = analogRead(A1);
 
-  Serial.print("DAC A output: "); Serial.println(dacOutputA);
-  Serial.print("DAC B output: "); Serial.println(dacOutputB);
+  Serial.print("DAC A output: "); Serial.println(dacOutput);
+  // Serial.print("DAC B output: "); Serial.println(dacOutputB);
 
   delay(2000);
 }
