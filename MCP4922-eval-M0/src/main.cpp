@@ -4,7 +4,7 @@
 float dacOutputA;
 float dacOutputB;
 
-const byte chipSelect = 9;
+const byte chipSelect = 12;
 const byte LDAC = 10;
 
 void writeMCP4922(uint8_t dac, uint16_t data)
@@ -65,5 +65,5 @@ void loop() {
   Serial.print("DAC B output: "); Serial.println(dacOutputB);
   Serial.println();
 
-  delay(2000);
+  delay(1000);
 }
